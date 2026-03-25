@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#0d0d0d">
+  <title>Academia Challenge</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    :root {
+      --bg:      #0d0d0d;
+      --bg2:     #161616;
+      --bg3:     #1f1f1f;
+      --bg4:     #2b2b2b;
+      --text:    #f0efe8;
+      --muted:   #777;
+      --muted2:  #444;
+      --accent:  #c8f135;
+      --accent-d:#a8d020;
+      --border:  rgba(255,255,255,0.07);
+      --border2: rgba(255,255,255,0.15);
+      --r:       16px;
+      --rsm:     10px;
+      --display: 'Bebas Neue', sans-serif;
+      --body:    'DM Sans', sans-serif;
+      --nav-h:   68px;
+      --safe-b:  env(safe-area-inset-bottom, 0px);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--body);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      min-height: 100dvh;
+      overscroll-behavior: none;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── SCROLLABLE CONTENT ── */
+    .page {
+      max-width: 480px;
+      margin: 0 auto;
+      padding-bottom: calc(var(--nav-h) + var(--safe-b) + 1rem);
+      min-height: 100dvh;
+    }
+
+    /* ── BOTTOM NAV ── */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: var(--bg2);
+      border-top: 1px solid var(--border2);
+      display: flex;
+      padding-bottom: var(--safe-b);
+      z-index: 100;
+    }
+    .nav-item {
+      flex: 1; display: flex; flex-direction: column; align-items: center;
+      justify-content: center; gap: 4px;
+      padding: 10px 8px;
+      cursor: pointer; border: none; background: none;
+      font-family: var(--body); color: var(--muted);
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.04em; transition: color 0.15s;
+      min-height: var(--nav-h);
+    }
+    .nav-item.active { color: var(--accent); }
+    .nav-icon { font-size: 22px; line-height: 1; }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      padding: 3rem 1.25rem 1.5rem;
+      overflow: hidden;
+    }
+    .hero::after {
+      content:''; position:absolute; top:-60px; right:-60px;
+      width:240px; height:240px;
+      background:radial-gradient(circle,rgba(200,241,53,.13) 0%,transparent 68%);
+      pointer-events:none;
+    }
+    .eyebrow { font-size:11px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); margin-bottom:10px; display:block; }
+    .hero h1 { font-family:var(--display); font-size:52px; line-height:.92; letter-spacing:.03em; }
+    .hero h1 em { color:var(--accent); font-style:normal; }
+    .hero-sub { margin-top:10px; font-size:14px; color:var(--muted); line-height:1.5; }
+
+    /* ── MONTH ── */
+    .month-wrap { padding:0 1.25rem 1.25rem; }
+    .month-wrap select {
+      width:100%; background:var(--bg3); color:var(--text);
+      border:1px solid var(--border2); border-radius:var(--rsm);
+      padding:14px 44px 14px 16px; font-size:15px; font-weight:500;
+      font-family:var(--body); outline:none; cursor:pointer; appearance:none;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' viewBox='0 0 11 7'%3E%3Cpath d='M1 1l4.5 4.5L10 1' stroke='%23777' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat:no-repeat; background-position:right 16px center;
+    }
+
+    .content { padding:0 1.25rem; }
+    .section-title { font-family:var(--display); font-size:18px; letter-spacing:.06em; color:var(--muted); margin-bottom:12px; }
+
+    /* ── PODIUM ── */
+    .podium { display:grid; grid-template-columns:1fr 1.18fr 1fr; gap:8px; margin-bottom:1.25rem; align-items:end; }
+    .pod { background:var(--bg2); border:1px solid var(--border); border-radius:var(--r); padding:16px 8px 14px; text-align:center; animation:pop .4s cubic-bezier(.34,1.56,.64,1) both; }
+    .pod.first { border-color:rgba(200,241,53,.4); background:#131a03; }
+    .pod.second{ animation-delay:.08s; }
+    .pod.third { animation-delay:.16s; }
+    @keyframes pop { from{opacity:0;transform:translateY(14px) scale(.94)} to{opacity:1;transform:none} }
+    .pod-medal { font-size:22px; margin-bottom:8px; line-height:1; }
+    .pod-av { width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:var(--display); font-size:15px; letter-spacing:.06em; margin:0 auto 8px; }
+    .pod.first .pod-av { background:var(--accent); color:#0d0d0d; }
+    .pod-name { font-size:12px; font-weight:600; color:var(--muted); margin-bottom:5px; }
+    .pod-count { font-family:var(--display); font-size:32px; line-height:1; color:var(--text); }
+    .pod.first .pod-count { color:var(--accent); }
+    .pod-unit { font-size:11px; color:var(--muted2); margin-top:2px; }
+
+    /* ── RANK LIST ── */
+    .rank-list { display:flex; flex-direction:column; gap:8px; margin-bottom:1.5rem; }
+    .rank-row { display:flex; align-items:center; gap:12px; background:var(--bg2); border:1px solid var(--border); border-radius:var(--rsm); padding:14px 16px; animation:slide .3s ease both; }
+    @keyframes slide { from{opacity:0;transform:translateX(-10px)} to{opacity:1;transform:none} }
+    .rank-n { font-family:var(--display); font-size:20px; color:var(--muted); width:22px; text-align:center; }
+    .r-av { width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:var(--display); font-size:15px; flex-shrink:0; }
+    .r-name { flex:1; font-size:15px; font-weight:500; color:var(--text); }
+    .r-bar { width:60px; }
+    .r-bar-bg { height:4px; background:var(--bg4); border-radius:99px; overflow:hidden; }
+    .r-bar-fill { height:100%; border-radius:99px; transition:width .5s ease; }
+    .r-cnt { font-family:var(--display); font-size:22px; color:var(--text); min-width:36px; text-align:right; }
+    .r-cnt small { font-family:var(--body); font-size:11px; color:var(--muted); }
+
+    /* ── QUEM É VOCÊ ── */
+    .who-label { font-size:12px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); margin-bottom:12px; }
+    .who-grid { display:flex; flex-direction:column; gap:10px; margin-bottom:1.5rem; }
+    .who-btn {
+      display:flex; align-items:center; gap:14px;
+      padding:16px 18px; border-radius:var(--r);
+      border:1.5px solid var(--border2); background:var(--bg3);
+      cursor:pointer; font-family:var(--body); font-size:16px; font-weight:600; color:var(--muted);
+      transition:all .18s; width:100%; text-align:left;
+      min-height:64px;
+    }
+    .who-btn.selected { border-color:var(--accent); color:var(--text); background:var(--bg2); }
+    .who-av { width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:var(--display); font-size:15px; flex-shrink:0; }
+    .who-check { margin-left:auto; font-size:20px; opacity:0; transition:opacity .15s; }
+    .who-btn.selected .who-check { opacity:1; }
+
+    /* ── HOJE ── */
+    .btn-hoje {
+      width:100%; padding:22px;
+      background:var(--accent); color:#0d0d0d;
+      border:none; border-radius:var(--r);
+      font-family:var(--display); font-size:30px; letter-spacing:.06em;
+      cursor:pointer; transition:background .15s, transform .1s;
+      display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px;
+      margin-bottom:1.5rem; min-height:90px;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn-hoje:active { transform:scale(.96); }
+    .btn-hoje.done { background:var(--bg3); color:var(--muted); border:1.5px solid var(--border2); cursor:default; }
+    .btn-hoje small { font-family:var(--body); font-size:13px; font-weight:500; opacity:.7; }
+
+    /* ── CALENDÁRIO ── */
+    .cal-wrap { background:var(--bg2); border:1px solid var(--border); border-radius:var(--r); padding:1.25rem; margin-bottom:1.5rem; }
+    .cal-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+    .cal-head-title { font-size:14px; font-weight:700; color:var(--text); }
+    .cal-nav { display:flex; gap:8px; }
+    .cal-nav button {
+      background:var(--bg3); border:1px solid var(--border2); border-radius:8px;
+      color:var(--muted); font-size:18px; width:36px; height:36px;
+      cursor:pointer; display:flex; align-items:center; justify-content:center;
+    }
+    .cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:5px; }
+    .cal-dow { font-size:11px; font-weight:700; text-align:center; color:var(--muted); padding:0 0 8px; }
+    .cal-day {
+      aspect-ratio:1; display:flex; align-items:center; justify-content:center;
+      border-radius:8px; font-size:14px; font-weight:500; cursor:pointer;
+      color:var(--muted); background:var(--bg3);
+      border:1.5px solid transparent;
+      transition:all .12s;
+      min-height:40px;
+    }
+    .cal-day.empty { background:transparent; cursor:default; }
+    .cal-day.future { opacity:.2; cursor:default; }
+    .cal-day.today { border-color:var(--muted); color:var(--text); }
+    .cal-day.marked { background:var(--accent); color:#0d0d0d; font-weight:700; }
+    .cal-save { width:100%; margin-top:14px; background:var(--accent); color:#0d0d0d; border:none; border-radius:var(--rsm); padding:14px; font-size:15px; font-weight:700; font-family:var(--body); cursor:pointer; }
+    .cal-save:active { opacity:.85; }
+
+    /* ── WARN ── */
+    .warn { font-size:13px; color:#f0997b; margin:-8px 0 16px; display:none; }
+
+    /* ── HISTÓRICO ── */
+    .hist-list { display:flex; flex-direction:column; gap:8px; }
+    .hist-row { display:flex; align-items:center; gap:12px; background:var(--bg2); border:1px solid var(--border); border-radius:var(--rsm); padding:12px 16px; }
+    .hist-av { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:var(--display); font-size:13px; flex-shrink:0; }
+    .hist-name { flex:1; font-size:14px; font-weight:500; color:var(--text); }
+    .hist-date { font-size:12px; color:var(--muted); }
+    .btn-ghost { background:transparent; color:var(--muted); border:1px solid var(--border2); padding:6px 12px; border-radius:var(--rsm); font-size:12px; font-family:var(--body); cursor:pointer; }
+
+    /* ── AMIGOS ── */
+    .card { background:var(--bg2); border:1px solid var(--border); border-radius:var(--r); padding:1.25rem; margin-bottom:1rem; }
+    .card-title { font-family:var(--display); font-size:22px; letter-spacing:.05em; color:var(--text); margin-bottom:14px; }
+    .input-row { display:flex; gap:8px; }
+    input[type="text"] {
+      flex:1; background:var(--bg3); color:var(--text);
+      border:1px solid var(--border2); border-radius:var(--rsm);
+      padding:13px 14px; font-size:15px; font-family:var(--body); outline:none;
+    }
+    input::placeholder { color:var(--muted2); }
+    input:focus { border-color:var(--accent); }
+    .btn-accent { background:var(--accent); color:#0d0d0d; border:none; padding:13px 18px; border-radius:var(--rsm); font-size:15px; font-weight:700; font-family:var(--body); cursor:pointer; white-space:nowrap; }
+    .amigo-row { display:flex; align-items:center; gap:12px; background:var(--bg2); border:1px solid var(--border); border-radius:var(--rsm); padding:14px 16px; margin-bottom:8px; }
+    .amigo-av { width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:var(--display); font-size:15px; flex-shrink:0; }
+    .amigo-name { flex:1; font-size:15px; font-weight:500; color:var(--text); }
+
+    .empty { text-align:center; padding:2.5rem 1rem; color:var(--muted); font-size:14px; }
+    .empty-icon { font-size:36px; margin-bottom:8px; }
+
+    /* ── TOAST ── */
+    .toast {
+      position:fixed; bottom:calc(var(--nav-h) + var(--safe-b) + 12px); left:50%;
+      transform:translateX(-50%) translateY(6px);
+      background:var(--accent); color:#0d0d0d;
+      padding:10px 22px; border-radius:99px;
+      font-size:13px; font-weight:700;
+      opacity:0; transition:opacity .22s,transform .22s;
+      pointer-events:none; white-space:nowrap; z-index:999;
+    }
+    .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- RANKING -->
+  <div id="tab-ranking">
+    <div class="hero">
+      <span class="eyebrow">🏋️ Competição mensal</span>
+      <h1>ACADEMIA<br><em>CHALLENGE</em></h1>
+      <p class="hero-sub">Quem vai mais vezes? Só o ranking não mente.</p>
+    </div>
+    <div class="month-wrap">
+      <select id="selMonth" onchange="render()"></select>
+    </div>
+    <div class="content">
+      <div id="podium" class="podium"></div>
+      <div id="list" class="rank-list"></div>
+    </div>
+  </div>
+
+  <!-- REGISTRAR -->
+  <div id="tab-registrar" style="display:none;">
+    <div class="hero" style="padding-bottom:1rem;">
+      <span class="eyebrow">✏️ Marcar presença</span>
+      <h1>REGISTRAR<br><em>IDA</em></h1>
+    </div>
+    <div class="content">
+
+      <div class="who-label">Quem é você?</div>
+      <div class="who-grid" id="whoGrid"></div>
+      <div class="warn" id="warnWho">Selecione seu nome primeiro!</div>
+
+      <button class="btn-hoje" id="btnHoje" onclick="registrarHoje()">
+        <span>💪 FUI HOJE!</span>
+      </button>
+
+      <div class="cal-wrap">
+        <div class="cal-head">
+          <div class="cal-head-title">Marcar outros dias</div>
+          <div class="cal-nav">
+            <button onclick="calPrev()">‹</button>
+            <button onclick="calNext()">›</button>
+          </div>
+        </div>
+        <div style="text-align:center;font-size:13px;font-weight:600;color:var(--muted);margin-bottom:12px;" id="calLabel"></div>
+        <div class="cal-grid" id="calGrid"></div>
+        <button class="cal-save" onclick="salvarDias()">Salvar dias marcados</button>
+      </div>
+
+      <div class="section-title" style="margin-bottom:10px;">Histórico do mês</div>
+      <div id="historico" class="hist-list" style="margin-bottom:1rem;"></div>
+    </div>
+  </div>
+
+  <!-- AMIGOS -->
+  <div id="tab-amigos" style="display:none;">
+    <div class="hero" style="padding-bottom:1rem;">
+      <span class="eyebrow">👥 Participantes</span>
+      <h1>AMIGOS<br><em>DA RAIA</em></h1>
+    </div>
+    <div class="content">
+      <div class="card">
+        <div class="card-title">Adicionar</div>
+        <div class="input-row">
+          <input type="text" id="nomeAmigo" placeholder="Nome do amigo" onkeydown="if(event.key==='Enter')addAmigo()">
+          <button class="btn-accent" onclick="addAmigo()">+</button>
+        </div>
+      </div>
+      <div id="listaAmigos"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <button class="nav-item active" id="nav-ranking" onclick="showTab('ranking')">
+    <span class="nav-icon">🏆</span>Ranking
+  </button>
+  <button class="nav-item" id="nav-registrar" onclick="showTab('registrar')">
+    <span class="nav-icon">💪</span>Registrar
+  </button>
+  <button class="nav-item" id="nav-amigos" onclick="showTab('amigos')">
+    <span class="nav-icon">👥</span>Amigos
+  </button>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const PALETTE=[
+  {bg:'#c8f135',tx:'#0d0d0d'},{bg:'#5dc3a5',tx:'#0d0d0d'},
+  {bg:'#f0997b',tx:'#0d0d0d'},{bg:'#85b7eb',tx:'#0d0d0d'},
+  {bg:'#ed93b1',tx:'#0d0d0d'},{bg:'#fac775',tx:'#0d0d0d'},
+  {bg:'#97c459',tx:'#0d0d0d'},
+];
+let state=JSON.parse(localStorage.getItem('gym_v6')||'null')||{
+  amigos:[{id:1,nome:'Talita'},{id:2,nome:'Vitoria'},{id:3,nome:'Ycaro'}],
+  idas:[],nextId:4
+};
+let selectedAmigo=null;
+let calDate=new Date(2026,3,1);
+let calSelected=new Set();
+
+const save=()=>{try{localStorage.setItem('gym_v6',JSON.stringify(state));}catch(e){}};
+const col =i=>PALETTE[i%PALETTE.length];
+const ini =n=>n.trim().split(' ').map(x=>x[0]).join('').toUpperCase().slice(0,2);
+const mKey=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+const dKey=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+const todayKey=()=>dKey(new Date());
+const mLbl=k=>{const[y,m]=k.split('-');return['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'][+m-1]+' '+y;};
+
+function toast(msg){
+  const el=document.getElementById('toast');
+  el.textContent=msg;el.classList.add('show');
+  clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('show'),2400);
+}
+
+function buildMonths(){
+  const sel=document.getElementById('selMonth');
+  const now=new Date();let html='';
+  for(let i=-2;i<14;i++){
+    const d=new Date(now.getFullYear(),now.getMonth()-i,1);
+    const k=mKey(d);html+=`<option value="${k}">${mLbl(k)}</option>`;
+  }
+  sel.innerHTML=html;sel.value='2026-04';
+}
+
+/* RANKING */
+function render(){
+  const mes=document.getElementById('selMonth').value;
+  const cnt={};state.amigos.forEach(a=>cnt[a.id]=0);
+  state.idas.filter(i=>i.data.slice(0,7)===mes).forEach(i=>{if(cnt[i.amigoId]!==undefined)cnt[i.amigoId]++;});
+  const sorted=[...state.amigos].sort((a,b)=>(cnt[b.id]||0)-(cnt[a.id]||0));
+  const mx=Math.max(1,...Object.values(cnt));
+  const podEl=document.getElementById('podium'),listEl=document.getElementById('list');
+  if(!sorted.length){podEl.innerHTML='';listEl.innerHTML='<div class="empty"><div class="empty-icon">👥</div>Adicione participantes na aba Amigos!</div>';return;}
+  const disp=[sorted[1]||null,sorted[0]||null,sorted[2]||null];
+  const cls=['second','first','third'],mdl=['🥈','🥇','🥉'];
+  podEl.innerHTML=disp.map((a,i)=>{
+    if(!a)return'<div></div>';
+    const idx=state.amigos.findIndex(x=>x.id===a.id);const c=col(idx);
+    const avS=cls[i]==='first'?'background:var(--accent);color:#0d0d0d;':`background:${c.bg};color:${c.tx};`;
+    return`<div class="pod ${cls[i]}"><div class="pod-medal">${mdl[i]}</div><div class="pod-av" style="${avS}">${ini(a.nome)}</div><div class="pod-name">${a.nome}</div><div class="pod-count">${cnt[a.id]||0}</div><div class="pod-unit">idas</div></div>`;
+  }).join('');
+  listEl.innerHTML=sorted.map((a,i)=>{
+    const idx=state.amigos.findIndex(x=>x.id===a.id);const c=col(idx);
+    const pct=Math.round(((cnt[a.id]||0)/mx)*100);
+    return`<div class="rank-row" style="animation-delay:${i*.05}s"><span class="rank-n">${i+1}</span><div class="r-av" style="background:${c.bg};color:${c.tx};">${ini(a.nome)}</div><span class="r-name">${a.nome}</span><div class="r-bar"><div class="r-bar-bg"><div class="r-bar-fill" style="width:${pct}%;background:${c.bg};"></div></div></div><span class="r-cnt">${cnt[a.id]||0}<small>x</small></span></div>`;
+  }).join('');
+}
+
+/* QUEM É VOCÊ */
+function renderWho(){
+  const el=document.getElementById('whoGrid');if(!el)return;
+  el.innerHTML=state.amigos.map((a,i)=>{
+    const c=col(i);const sel=selectedAmigo===a.id;
+    return`<button class="who-btn${sel?' selected':''}" onclick="selectAmigo(${a.id})">
+      <div class="who-av" style="background:${c.bg};color:${c.tx};">${ini(a.nome)}</div>
+      <span>${a.nome}</span>
+      <span class="who-check">✓</span>
+    </button>`;
+  }).join('');
+  updateBtnHoje();
+}
+function selectAmigo(id){
+  selectedAmigo=id;
+  document.getElementById('warnWho').style.display='none';
+  renderWho();buildCal();renderHist();
+}
+function updateBtnHoje(){
+  const btn=document.getElementById('btnHoje');if(!btn)return;
+  if(!selectedAmigo){
+    btn.className='btn-hoje';
+    btn.innerHTML='<span>💪 FUI HOJE!</span>';return;
+  }
+  const tk=todayKey();
+  const jaFoi=state.idas.some(i=>i.amigoId===selectedAmigo&&i.data===tk);
+  if(jaFoi){
+    btn.className='btn-hoje done';
+    btn.innerHTML='<div>✓ JÁ REGISTRADO</div><small>hoje você já marcou presença</small>';
+  } else {
+    btn.className='btn-hoje';
+    btn.innerHTML='<span>💪 FUI HOJE!</span>';
+  }
+}
+function registrarHoje(){
+  if(!selectedAmigo){document.getElementById('warnWho').style.display='block';return;}
+  const tk=todayKey();
+  if(state.idas.some(i=>i.amigoId===selectedAmigo&&i.data===tk)){toast('Você já registrou hoje! 🎯');return;}
+  state.idas.push({id:Date.now().toString(),amigoId:selectedAmigo,data:tk});
+  save();render();updateBtnHoje();renderHist();
+  const nome=(state.amigos.find(a=>a.id===selectedAmigo)||{}).nome||'';
+  toast('💪 '+nome+', presença marcada!');
+}
+
+/* CALENDÁRIO */
+function buildCal(){
+  const el=document.getElementById('calGrid');if(!el)return;
+  const now=new Date();
+  const y=calDate.getFullYear(),m=calDate.getMonth();
+  document.getElementById('calLabel').textContent=mLbl(`${y}-${String(m+1).padStart(2,'0')}`);
+  const mesKey=`${y}-${String(m+1).padStart(2,'0')}`;
+  const registradas=new Set(state.idas.filter(i=>i.amigoId===selectedAmigo&&i.data.slice(0,7)===mesKey).map(i=>i.data));
+  const firstDay=new Date(y,m,1).getDay();
+  const daysInMonth=new Date(y,m+1,0).getDate();
+  const todayD=dKey(now);
+  const dows=['D','S','T','Q','Q','S','S'];
+  let html=dows.map(d=>`<div class="cal-dow">${d}</div>`).join('');
+  for(let i=0;i<firstDay;i++)html+=`<div class="cal-day empty"></div>`;
+  for(let d=1;d<=daysInMonth;d++){
+    const dk=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isFuture=dk>todayD;
+    const isReg=registradas.has(dk)||calSelected.has(dk);
+    const isToday=dk===todayD;
+    let cls='cal-day';
+    if(isFuture)cls+=' future';
+    else if(isReg)cls+=' marked';
+    else if(isToday)cls+=' today';
+    const click=isFuture?'':`onclick="toggleDay('${dk}')"`;
+    html+=`<div class="${cls}" ${click}>${d}</div>`;
+  }
+  el.innerHTML=html;
+}
+function toggleDay(dk){
+  if(!selectedAmigo){document.getElementById('warnWho').style.display='block';return;}
+  const jaReg=state.idas.some(i=>i.amigoId===selectedAmigo&&i.data===dk);
+  if(jaReg){
+    state.idas=state.idas.filter(i=>!(i.amigoId===selectedAmigo&&i.data===dk));
+    calSelected.delete(dk);save();render();buildCal();renderHist();
+  } else {
+    if(calSelected.has(dk))calSelected.delete(dk);else calSelected.add(dk);
+    buildCal();
+  }
+}
+function salvarDias(){
+  if(!selectedAmigo){document.getElementById('warnWho').style.display='block';return;}
+  if(!calSelected.size){toast('Toque nos dias que você foi!');return;}
+  calSelected.forEach(dk=>{
+    if(!state.idas.some(i=>i.amigoId===selectedAmigo&&i.data===dk))
+      state.idas.push({id:Date.now().toString()+Math.random(),amigoId:selectedAmigo,data:dk});
+  });
+  const qtd=calSelected.size;
+  calSelected.clear();save();render();buildCal();renderHist();
+  toast(`✓ ${qtd} dia${qtd>1?'s':''} salvo${qtd>1?'s':''}!`);
+}
+function calPrev(){calDate=new Date(calDate.getFullYear(),calDate.getMonth()-1,1);buildCal();}
+function calNext(){
+  const next=new Date(calDate.getFullYear(),calDate.getMonth()+1,1);
+  if(next<=new Date()){calDate=next;buildCal();}
+}
+
+/* HISTÓRICO */
+function renderHist(){
+  const el=document.getElementById('historico');if(!el)return;
+  const mes=document.getElementById('selMonth')?document.getElementById('selMonth').value:'2026-04';
+  let idas=[...state.idas].filter(i=>i.data.slice(0,7)===mes);
+  if(selectedAmigo)idas=idas.filter(i=>i.amigoId===selectedAmigo);
+  idas.sort((a,b)=>b.data.localeCompare(a.data));
+  if(!idas.length){el.innerHTML='<div class="empty"><div class="empty-icon">📋</div>Nenhuma ida ainda.</div>';return;}
+  el.innerHTML=idas.map(i=>{
+    const a=state.amigos.find(x=>x.id===i.amigoId);if(!a)return'';
+    const c=col(state.amigos.findIndex(x=>x.id===a.id));
+    const d=new Date(i.data+'T12:00:00');
+    return`<div class="hist-row"><div class="hist-av" style="background:${c.bg};color:${c.tx};">${ini(a.nome)}</div><span class="hist-name">${a.nome}</span><span class="hist-date">${d.toLocaleDateString('pt-BR')}</span><button class="btn-ghost" onclick="remIda('${i.id}')">✕</button></div>`;
+  }).join('');
+}
+
+/* AMIGOS */
+function renderAmigos(){
+  const el=document.getElementById('listaAmigos');if(!el)return;
+  if(!state.amigos.length){el.innerHTML='<div class="empty"><div class="empty-icon">👀</div>Sem participantes ainda.</div>';return;}
+  el.innerHTML=state.amigos.map((a,i)=>{
+    const c=col(i);
+    return`<div class="amigo-row"><div class="amigo-av" style="background:${c.bg};color:${c.tx};">${ini(a.nome)}</div><span class="amigo-name">${a.nome}</span><button class="btn-ghost" onclick="remAmigo(${a.id})">✕</button></div>`;
+  }).join('');
+}
+function addAmigo(){
+  const inp=document.getElementById('nomeAmigo');const nome=inp.value.trim();if(!nome)return;
+  state.amigos.push({id:state.nextId++,nome});inp.value='';save();render();renderAmigos();toast('✓ '+nome+' adicionado!');
+}
+function remAmigo(id){
+  const a=state.amigos.find(x=>x.id===id);
+  if(!confirm('Remover '+(a?a.nome:'')+' e todas as idas?'))return;
+  if(selectedAmigo===id)selectedAmigo=null;
+  state.amigos=state.amigos.filter(x=>x.id!==id);
+  state.idas=state.idas.filter(i=>i.amigoId!==id);
+  save();render();renderAmigos();toast('Removido.');
+}
+function remIda(id){state.idas=state.idas.filter(i=>i.id!==id);save();render();renderHist();toast('Ida removida.');}
+
+/* TABS */
+function showTab(t){
+  ['ranking','registrar','amigos'].forEach(x=>{
+    document.getElementById('tab-'+x).style.display=x===t?'':'none';
+  });
+  document.querySelectorAll('.nav-item').forEach((el,i)=>{
+    el.classList.toggle('active',['ranking','registrar','amigos'][i]===t);
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(t==='registrar'){renderWho();buildCal();renderHist();}
+  if(t==='amigos'){renderAmigos();}
+}
+
+buildMonths();render();
+</script>
+</body>
+</html>
